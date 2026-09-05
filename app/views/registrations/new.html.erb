@@ -1,0 +1,18 @@
+<main class="auth-shell">
+  <section class="auth-card">
+    <p class="eyebrow">PDI · crescimento com intenção</p>
+    <h1>Comece seu próximo ciclo.</h1>
+    <p class="muted">Um espaço calmo para transformar planos em passos possíveis.</p>
+    <% if flash[:alert] %><p class="form-alert" role="alert"><%= flash[:alert] %></p><% end %>
+    <%= form_with url: registration_path, scope: :user do |form| %>
+      <%= form.label :email_address, "E-mail" %>
+      <%= form.email_field :email_address, autocomplete: "email", required: true, autofocus: true %>
+      <%= form.label :password, "Senha" %>
+      <%= form.password_field :password, autocomplete: "new-password", required: true, minlength: 8 %>
+      <%= form.label :password_confirmation, "Confirme sua senha" %>
+      <%= form.password_field :password_confirmation, autocomplete: "new-password", required: true, minlength: 8 %>
+      <%= form.submit "Criar minha conta", class: "button button-primary button-full" %>
+    <% end %>
+    <p class="auth-switch">Já tem conta? <%= link_to "Entrar", new_session_path %></p>
+  </section>
+</main>
