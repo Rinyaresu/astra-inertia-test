@@ -14,6 +14,20 @@ class PlanTest < ActiveSupport::TestCase
     assert_equal 100, @plan.reload.progress
   end
 
+  test "stale task instances cannot award or reverse XP twice" do
+    stale = Task.find(@task.id)
+    @task.complete!
+    stale.complete!
+    assert_equal 25, @user.xp_total
+    assert_equal 1, @task.xp_entries.count
+
+    stale = Task.find(@task.id)
+    @task.reopen!
+    stale.reopen!
+    assert_equal 0, @user.xp_total
+    assert_equal 2, @task.xp_entries.count
+  end
+
   test "completion awards XP once and reopening reverses it" do
     @task.complete!
     assert_equal 25, @user.xp_total
