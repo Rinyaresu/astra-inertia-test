@@ -1,8 +1,14 @@
-<h1>Forgot your password?</h1>
-
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+<main class="auth-shell">
+  <section class="auth-card">
+    <p class="eyebrow">PDI · crescimento com intenção</p>
+    <h1>Retome seu acesso.</h1>
+    <p class="muted">Enviaremos um link para você escolher uma nova senha.</p>
+    <% if flash[:alert] %><p class="form-alert" role="alert"><%= flash[:alert] %></p><% end %>
+    <%= form_with url: passwords_path do |form| %>
+      <%= form.label :email_address, "E-mail" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "voce@exemplo.com", value: params[:email_address] %>
+      <%= form.submit "Enviar link de recuperação", class: "button button-primary button-full" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Voltar para entrar", new_session_path %></p>
+  </section>
+</main>
