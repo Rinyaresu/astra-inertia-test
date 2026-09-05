@@ -5,7 +5,7 @@ class GoalsController < ApplicationController
     if goal.save
       redirect_to root_path(plan_id: plan.id), notice: "Objetivo adicionado."
     else
-      redirect_to root_path(plan_id: plan.id), alert: goal.errors.full_messages.to_sentence
+      redirect_to root_path(plan_id: plan.id), alert: goal.errors.full_messages.to_sentence, inertia: { errors: goal.errors }
     end
   end
 
@@ -14,7 +14,7 @@ class GoalsController < ApplicationController
     if goal.update(goal_params)
       redirect_to root_path(plan_id: goal.plan_id), notice: "Objetivo atualizado."
     else
-      redirect_to root_path(plan_id: goal.plan_id), alert: goal.errors.full_messages.to_sentence
+      redirect_to root_path(plan_id: goal.plan_id), alert: goal.errors.full_messages.to_sentence, inertia: { errors: goal.errors }
     end
   end
 

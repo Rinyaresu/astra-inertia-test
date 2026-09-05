@@ -5,7 +5,7 @@ class TasksController < ApplicationController
     if task.save
       redirect_to root_path(plan_id: goal.plan_id), notice: "Tarefa adicionada."
     else
-      redirect_to root_path(plan_id: goal.plan_id), alert: task.errors.full_messages.to_sentence
+      redirect_to root_path(plan_id: goal.plan_id), alert: task.errors.full_messages.to_sentence, inertia: { errors: task.errors }
     end
   end
 
@@ -14,7 +14,7 @@ class TasksController < ApplicationController
     params[:completed] == "true" ? task.complete! : task.reopen!
     redirect_to root_path(plan_id: task.plan_id), notice: task.completed_at.present? ? "Tarefa concluída. +25 XP" : "Tarefa reaberta. XP revertido."
   rescue ActiveRecord::RecordInvalid => error
-    redirect_to root_path(plan_id: task.plan_id), alert: error.message
+    redirect_to root_path(plan_id: task.plan_id), alert: error.message, inertia: { errors: { base: [error.message] } }
   end
 
   private

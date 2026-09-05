@@ -4,7 +4,7 @@ class PlansController < ApplicationController
     if plan.save
       redirect_to root_path(plan_id: plan.id), notice: "Plano criado. Vamos avançar um passo de cada vez."
     else
-      redirect_to root_path, alert: plan.errors.full_messages.to_sentence
+      redirect_to root_path, alert: plan.errors.full_messages.to_sentence, inertia: { errors: plan.errors }
     end
   end
 
@@ -13,7 +13,7 @@ class PlansController < ApplicationController
     if plan.update(plan_params)
       redirect_to root_path(plan_id: plan.id), notice: "Plano atualizado."
     else
-      redirect_to root_path(plan_id: plan.id), alert: plan.errors.full_messages.to_sentence
+      redirect_to root_path(plan_id: plan.id), alert: plan.errors.full_messages.to_sentence, inertia: { errors: plan.errors }
     end
   end
 

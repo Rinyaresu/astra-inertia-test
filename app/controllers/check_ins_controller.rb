@@ -5,7 +5,7 @@ class CheckInsController < ApplicationController
     if check_in.save
       redirect_to root_path(plan_id: plan.id), notice: "Check-in salvo. Obrigado por olhar para o caminho."
     else
-      redirect_to root_path(plan_id: plan.id), alert: check_in.errors.full_messages.to_sentence
+      redirect_to root_path(plan_id: plan.id), alert: check_in.errors.full_messages.to_sentence, inertia: { errors: check_in.errors }
     end
   end
 
