@@ -20,7 +20,10 @@ FileUtils.chdir APP_ROOT do
   #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
   # end
 
-  puts "\n== Preparing database =="
+  puts "\n== Installing JavaScript dependencies =="
+  system! "npm install"
+
+  puts "\n== Preparing database ==
   system! "bin/rails db:prepare"
   system! "bin/rails db:reset" if ARGV.include?("--reset")
 
