@@ -16,6 +16,10 @@ class SessionsController < ApplicationController
 
   def destroy
     terminate_session
-    redirect_to new_session_path, status: :see_other
+    if request.inertia?
+      inertia_location new_session_path
+    else
+      redirect_to new_session_path, status: :see_other
+    end
   end
 end

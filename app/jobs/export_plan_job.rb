@@ -7,7 +7,7 @@ class ExportPlanJob < ApplicationJob
     export = Export.find(export_id)
     plan = export.user.plans.includes(goals: :tasks).find(plan_id)
     export.update!(status: "processing")
-    directory = Rails.root.join("storage", "exports")
+    directory = Rails.root.join(Rails.env.test? ? "tmp/storage" : "storage", "exports")
     FileUtils.mkdir_p(directory)
     path = directory.join("#{export.id}.xlsx")
     package = Axlsx::Package.new
@@ -18,7 +18,9 @@ class ExportPlanJob < ApplicationJob
       sheet.add_row [ "PDI — #{plan.title}" ], style: title
       sheet.add_row [ "Propósito", plan.purpose ]
       sheet.add_row [ "Período", "#{plan.start_date} a #{plan.end_date}" ]
-      sheet.add_row [ "Status", plan.status ]
+      sheet.add_row [ "Status", { "active" => "Ativo", "paused" => "Em pausa", "completed" => "Concluído" }.fetch(plan.status) ]
+      sheet.add_row [ "XP acumulado", plan.xp_entries.sum(:points) ]
+      sheet.add_row [ "Gerado em", Time.current.strftime("%d/%m/%Y %H:%M %Z") ]
       sheet.add_row [ "Progresso", "#{plan.progress}%" ]
       sheet.add_row [ "Tarefas concluídas", "#{plan.completed_tasks}/#{plan.tasks.size}" ]
     end
@@ -37,6 +39,14 @@ class ExportPlanJob < ApplicationJob
     workbook.add_worksheet(name: "Check-ins") do |sheet|
       sheet.add_row [ "Data", "Reflexão" ], style: header
       plan.check_ins.order(:checked_in_on).each { |check| sheet.add_row [ check.checked_in_on, check.reflection ] }
+    end
+    workbook.worksheets.each do |sheet|
+      sheet.sheet_view.pane do |pane|
+        pane.top_left_cell = "A2"
+        pane.y_split = 1
+        pane.state = :frozen
+      end
+      sheet.column_widths(*Array.new(sheet.rows.first.cells.size, 28))
     end
     package.serialize(path.to_s)
     export.update!(status: "ready", file_path: path.to_s)
